@@ -20,14 +20,14 @@ jobs:
       - uses: android-actions/setup-android@v3
       - name: Install Android SDK 36
         run: sdkmanager "platforms;android-36" "build-tools;36.0.0"
-      - name: Restore Arcane Waves v1.3 source
+      - name: Restore Arcane Waves v1.3.1 source
         run: |
-          cat build_sources/v13/MainActivity.part*.b64 | tr -d '\n' | base64 -d | gzip -d > app/src/main/java/com/bazaverse/arcanewaves/MainActivity.java
+          cat build_sources/v131/MainActivity.part*.b64 | tr -d '\n' | base64 -d | gzip -d > app/src/main/java/com/bazaverse/arcanewaves/MainActivity.java
       - name: Restore permanent test signing key
         run: base64 -d build_sources/arcane-debug.keystore.b64 > arcane-debug.keystore
       - name: Build debug APK
         run: gradle :app:assembleDebug --stacktrace
       - uses: actions/upload-artifact@v4
         with:
-          name: ArcaneWaves-v1.3.0-active-spells
+          name: ArcaneWaves-v1.3.1-safe-ui-combo
           path: app/build/outputs/apk/debug/app-debug.apk
