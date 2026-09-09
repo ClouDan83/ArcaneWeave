@@ -9,3 +9,4 @@ Questa repository contiene il progetto Android standard usato per le build di te
 - Target/Compile SDK: 36
 - Java: 17
 - Gameplay: ondate infinite, mostri casuali, magie automatiche, monete e potenziamenti illimitati.
+- Build test: v1.0.3 native Android
