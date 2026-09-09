@@ -19,8 +19,8 @@ android {
         applicationId = "com.bazaverse.arcanewaves"
         minSdk = 23
         targetSdk = 36
-        versionCode = 12
-        versionName = "1.6.0"
+        versionCode = 14
+        versionName = "1.8.0"
     }
 
     buildTypes {
