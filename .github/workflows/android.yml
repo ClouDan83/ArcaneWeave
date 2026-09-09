@@ -20,7 +20,7 @@ jobs:
       - uses: android-actions/setup-android@v3
       - name: Install Android SDK 36
         run: sdkmanager "platforms;android-36" "build-tools;36.0.0"
-      - name: Restore Arcane Waves v1.6 source
+      - name: Restore Arcane Waves base source
         run: |
           cat build_sources/v16/MainActivity.part00.b64 build_sources/v16final/MainActivity.part01.b64 build_sources/v16final/MainActivity.part02.b64 | tr -d '\n' | base64 -d | gzip -d > app/src/main/java/com/bazaverse/arcanewaves/MainActivity.java
       - name: Fix Android gradient constructor
@@ -36,15 +36,16 @@ jobs:
                               new int[]{0x00ffffff, 0x35b6c9ff, 0x00ffffff},
                               new float[]{0f, 0.5f, 1f},
                               Shader.TileMode.CLAMP));'''
-          if old not in s:
-              raise SystemExit('Gradient snippet not found')
-          p.write_text(s.replace(old, new))
+          if old in s:
+              p.write_text(s.replace(old, new))
           PY
+      - name: Apply v1.8 anime visual upgrade
+        run: python3 build_sources/v18/patch_v18.py
       - name: Restore permanent test signing key
         run: base64 -d build_sources/arcane-debug.keystore.b64 > arcane-debug.keystore
       - name: Build debug APK
         run: gradle :app:assembleDebug --stacktrace
       - uses: actions/upload-artifact@v4
         with:
-          name: ArcaneWaves-v1.6.0-camp-hub
+          name: ArcaneWaves-v1.8.0-anime-demo
           path: app/build/outputs/apk/debug/app-debug.apk
