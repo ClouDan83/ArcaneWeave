@@ -23,9 +23,11 @@ jobs:
       - name: Restore Arcane Waves v1.2 source
         run: |
           base64 -d build_sources/MainActivity.java.gz.b64 | gzip -d > app/src/main/java/com/bazaverse/arcanewaves/MainActivity.java
+      - name: Restore permanent test signing key
+        run: base64 -d build_sources/arcane-debug.keystore.b64 > arcane-debug.keystore
       - name: Build debug APK
         run: gradle :app:assembleDebug --stacktrace
       - uses: actions/upload-artifact@v4
         with:
-          name: ArcaneWaves-v1.2.0-debug
+          name: ArcaneWaves-v1.2.0-stable-test-signing
           path: app/build/outputs/apk/debug/app-debug.apk
