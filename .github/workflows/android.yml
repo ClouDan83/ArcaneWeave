@@ -23,6 +23,18 @@ jobs:
       - name: Restore Arcane Waves v2.0 source
         run: |
           cat build_sources/v20/source.part00.b64 build_sources/v20/source.part01.b64 build_sources/v20/source.part02.b64 build_sources/v20/source.part03.b64 | tr -d '\n' | base64 -d | gzip -d > app/src/main/java/com/bazaverse/arcanewaves/MainActivity.java
+      - name: Fix v2.0 enemy spawn brace
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('app/src/main/java/com/bazaverse/arcanewaves/MainActivity.java')
+          s = p.read_text()
+          old = '''                }\n            }\n            }\n            e.elite = elite;'''
+          new = '''                }\n            }\n            e.elite = elite;'''
+          if old not in s:
+              raise SystemExit('Expected v2.0 brace pattern not found')
+          p.write_text(s.replace(old, new, 1))
+          PY
       - name: Restore permanent test signing key
         run: base64 -d build_sources/arcane-debug.keystore.b64 > arcane-debug.keystore
       - name: Build debug APK
