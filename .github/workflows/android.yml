@@ -20,26 +20,18 @@ jobs:
       - uses: android-actions/setup-android@v3
       - name: Install Android SDK 36
         run: sdkmanager "platforms;android-36" "build-tools;36.0.0"
-      - name: Restore Arcane Waves v2.0 source
+      - name: Restore Arcane Waves v2.1 source
         run: |
-          cat build_sources/v20/source.part00.b64 build_sources/v20/source.part01.b64 build_sources/v20/source.part02.b64 build_sources/v20/source.part03.b64 | tr -d '\n' | base64 -d | gzip -d > app/src/main/java/com/bazaverse/arcanewaves/MainActivity.java
-      - name: Fix v2.0 enemy spawn brace
+          cat build_sources/v21/source.part00.b64 build_sources/v21/source.part01.b64 | tr -d '\n' | base64 -d | gzip -d > app/src/main/java/com/bazaverse/arcanewaves/MainActivity.java
+      - name: Restore anime sprite atlas
         run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          p = Path('app/src/main/java/com/bazaverse/arcanewaves/MainActivity.java')
-          s = p.read_text()
-          old = '''                }\n            }\n            }\n            e.elite = elite;'''
-          new = '''                }\n            }\n            e.elite = elite;'''
-          if old not in s:
-              raise SystemExit('Expected v2.0 brace pattern not found')
-          p.write_text(s.replace(old, new, 1))
-          PY
+          cat build_sources/v21/anime_sprites.b64 | tr -d '\n' | base64 -d > app/src/main/assets/anime_sprites.webp
+          test -s app/src/main/assets/anime_sprites.webp
       - name: Restore permanent test signing key
         run: base64 -d build_sources/arcane-debug.keystore.b64 > arcane-debug.keystore
       - name: Build debug APK
         run: gradle :app:assembleDebug --stacktrace
       - uses: actions/upload-artifact@v4
         with:
-          name: ArcaneWaves-v2.0.0-dark-anime-gameplay-demo
+          name: ArcaneWaves-v2.1.0-anime-art
           path: app/build/outputs/apk/debug/app-debug.apk
