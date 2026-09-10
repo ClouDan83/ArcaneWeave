@@ -23,9 +23,20 @@ jobs:
       - name: Restore Arcane Waves v2.2 animated source
         run: |
           cat build_sources/v22/source.part00.b64 build_sources/v22/source.part01.b64 build_sources/v22/source.part02.b64 build_sources/v22/source.part03.b64 | tr -d '\n' | base64 -d | gzip -d > app/src/main/java/com/bazaverse/arcanewaves/MainActivity.java
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('app/src/main/java/com/bazaverse/arcanewaves/MainActivity.java')
+          s = p.read_text()
+          old = '        float shopButtonTop() { return safeBottom() - 82f; }\n        float campRestButtonTop() { return safeTop() + 188f; }\n        float campOffersTop() { return safeTop() + 356f; }'
+          new = '        float shopButtonTop() { return safeBottom() - 72f; }\n        float campRestButtonTop() { return safeTop() + 188f; }\n        float campServiceTop() { return Math.max(safeTop() + 150f, safeBottom() - 520f); }\n        float campOffersTop() { return campServiceTop() + 154f; }'
+          if old not in s:
+              raise SystemExit('camp helper insertion target not found')
+          p.write_text(s.replace(old, new, 1))
+          PY
           grep -q 'drawAnimatedBoss' app/src/main/java/com/bazaverse/arcanewaves/MainActivity.java
           grep -q 'drawSkillOrb' app/src/main/java/com/bazaverse/arcanewaves/MainActivity.java
           grep -q 'drawHeroLeg' app/src/main/java/com/bazaverse/arcanewaves/MainActivity.java
+          grep -q 'float campServiceTop()' app/src/main/java/com/bazaverse/arcanewaves/MainActivity.java
       - name: Restore permanent test signing key
         run: base64 -d build_sources/arcane-debug.keystore.b64 > arcane-debug.keystore
       - name: Build debug APK
