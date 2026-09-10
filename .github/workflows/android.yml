@@ -22,12 +22,12 @@ jobs:
         run: sdkmanager "platforms;android-36" "build-tools;36.0.0"
       - name: Restore Arcane Waves v2.0 source
         run: |
-          cat build_sources/v20/MainActivity.java.gz.b64 | tr -d '\n' | base64 -d | gzip -d > app/src/main/java/com/bazaverse/arcanewaves/MainActivity.java
+          cat build_sources/v20/source.part00.b64 build_sources/v20/source.part01.b64 build_sources/v20/source.part02.b64 build_sources/v20/source.part03.b64 | tr -d '\n' | base64 -d | gzip -d > app/src/main/java/com/bazaverse/arcanewaves/MainActivity.java
       - name: Restore permanent test signing key
         run: base64 -d build_sources/arcane-debug.keystore.b64 > arcane-debug.keystore
       - name: Build debug APK
         run: gradle :app:assembleDebug --stacktrace
       - uses: actions/upload-artifact@v4
         with:
-          name: ArcaneWaves-v2.0.0-dark-anime-demo
+          name: ArcaneWaves-v2.0.0-dark-anime-gameplay-demo
           path: app/build/outputs/apk/debug/app-debug.apk
