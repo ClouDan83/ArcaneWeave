@@ -20,27 +20,22 @@ jobs:
       - uses: android-actions/setup-android@v3
       - name: Install Android SDK 36
         run: sdkmanager "platforms;android-36" "build-tools;36.0.0"
-      - name: Restore Arcane Waves v2.1 real anime source
+      - name: Restore Arcane Waves v2.2 animated source
         run: |
-          cat build_sources/v21/source.part00.b64 build_sources/v21/source.part01.b64 build_sources/v21/source.part02.b64 | tr -d '\n' | base64 -d | gzip -d > app/src/main/java/com/bazaverse/arcanewaves/MainActivity.java
-          grep -q 'anime_sprites.webp' app/src/main/java/com/bazaverse/arcanewaves/MainActivity.java
-          grep -q 'drawAnimeSprite' app/src/main/java/com/bazaverse/arcanewaves/MainActivity.java
-      - name: Restore complete anime sprite atlas
-        run: |
-          cat build_sources/v21/anime_sprites.b64 build_sources/v21/anime_sprites.part01.b64 build_sources/v21/anime_sprites.part02.b64 build_sources/v21/anime_sprites.part03.b64 | tr -d '\n' | base64 -d > app/src/main/assets/anime_sprites.webp
-          test "$(stat -c%s app/src/main/assets/anime_sprites.webp)" -eq 28384
+          cat build_sources/v22/source.part00.b64 build_sources/v22/source.part01.b64 build_sources/v22/source.part02.b64 build_sources/v22/source.part03.b64 | tr -d '\n' | base64 -d | gzip -d > app/src/main/java/com/bazaverse/arcanewaves/MainActivity.java
+          grep -q 'drawAnimatedBoss' app/src/main/java/com/bazaverse/arcanewaves/MainActivity.java
+          grep -q 'drawSkillOrb' app/src/main/java/com/bazaverse/arcanewaves/MainActivity.java
+          grep -q 'drawHeroLeg' app/src/main/java/com/bazaverse/arcanewaves/MainActivity.java
       - name: Restore permanent test signing key
         run: base64 -d build_sources/arcane-debug.keystore.b64 > arcane-debug.keystore
       - name: Build debug APK
         run: gradle :app:assembleDebug --stacktrace
-      - name: Verify anime art is packaged
+      - name: Verify v2.2 dark anime assets
         run: |
-          unzip -l app/build/outputs/apk/debug/app-debug.apk | grep 'assets/anime_sprites.webp'
-          test "$(unzip -p app/build/outputs/apk/debug/app-debug.apk assets/anime_sprites.webp | wc -c)" -eq 28384
           unzip -l app/build/outputs/apk/debug/app-debug.apk | grep 'assets/bg_menu_dark_anime.webp'
           unzip -l app/build/outputs/apk/debug/app-debug.apk | grep 'assets/bg_battle_dark_anime.webp'
           unzip -l app/build/outputs/apk/debug/app-debug.apk | grep 'assets/bg_camp_dark_anime.webp'
       - uses: actions/upload-artifact@v4
         with:
-          name: ArcaneWaves-v2.1.0-real-anime-demo
+          name: ArcaneWaves-v2.2.0-animated-dark-anime
           path: app/build/outputs/apk/debug/app-debug.apk
